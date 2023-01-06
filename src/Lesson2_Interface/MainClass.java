@@ -5,10 +5,15 @@ public class MainClass {
 //        Animal c; // Khai báo biến c có kiểu Cat
 //        c = new Cat(); // Khởi tạo đối tượng Cat và gán vào biến c
 
+        /*
+         * static: tĩnh
+         */
         Animal c = new Cat();
         Animal d = new Dog();
         Animal b = new Bird();
-        nuoi(b);
+        Bird b1 = new Bird();
+        Bird.soChan = 1;
+        MainClass.nuoi(b);
     }
     
     public static void nuoi(Animal a)
