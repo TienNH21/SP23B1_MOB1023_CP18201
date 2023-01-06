@@ -1,4 +1,4 @@
-package lesson1_oop;
+package Lesson1_oop;
 
 public class SinhVien extends Nguoi {
     /*
@@ -9,7 +9,6 @@ public class SinhVien extends Nguoi {
      * Đối tượng của SinhVien được phép có kiểu Nguoi.
      */
     
-
     /*
      * Override: Ghi đè
      * Class con có phương thức cùng tên, cùng tham số 

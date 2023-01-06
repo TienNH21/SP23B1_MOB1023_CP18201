@@ -1,4 +1,4 @@
-package lesson1_oop;
+package Lesson1_oop;
 
 public class Nguoi {
     /*

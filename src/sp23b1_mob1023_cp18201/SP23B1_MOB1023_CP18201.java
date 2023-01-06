@@ -1,6 +1,6 @@
 package sp23b1_mob1023_cp18201;
 
-import lesson1_oop.Nguoi;
+import Lesson1_oop.Nguoi;
 
 public class SP23B1_MOB1023_CP18201 {
 
