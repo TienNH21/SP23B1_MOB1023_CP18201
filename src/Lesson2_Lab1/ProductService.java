@@ -13,12 +13,12 @@ public class ProductService implements IProductService {
 
     @Override
     public void update(int viTri, Product p) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.list.set(viTri, p);
     }
 
     @Override
     public void delete(int viTri) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.list.remove(viTri);
     }
 
     @Override
