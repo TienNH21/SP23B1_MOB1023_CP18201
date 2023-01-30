@@ -5,12 +5,14 @@ import Lesson2_Lab1.IProductService;
 import Lesson2_Lab1.Product;
 import Lesson2_Lab1.ProductService;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class QLProductFrame extends javax.swing.JFrame {
     private IProductService serv;
     public QLProductFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.serv = new ProductService();
         
         // Khởi tạo 2 đối tượng mặc định
@@ -29,6 +31,7 @@ public class QLProductFrame extends javax.swing.JFrame {
         ArrayList<Product> list = this.serv.select();
         DefaultTableModel dtm = (DefaultTableModel)
             this.tblProduct.getModel();
+        dtm.setRowCount(0); // Xóa các dòng đang có trên JTable
         for (Product p : list) {
             Object[] rowData = { p.getName(), p.getPrice() };
             dtm.addRow(rowData);
@@ -59,12 +62,32 @@ public class QLProductFrame extends javax.swing.JFrame {
         jLabel2.setText("Price");
 
         btnThem.setText("Them");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnSua.setText("Sua");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xoa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -120,6 +143,11 @@ public class QLProductFrame extends javax.swing.JFrame {
                 "Name", "Price"
             }
         ));
+        tblProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblProductMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblProduct);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -165,6 +193,99 @@ public class QLProductFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        this.clear();
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void tblProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductMouseClicked
+        int row = this.tblProduct.getSelectedRow();
+        if (row == -1) {
+            return ;
+        }
+        
+        String name = this.tblProduct.getValueAt(row, 0).toString();
+        String price = this.tblProduct.getValueAt(row, 1).toString();
+        
+        this.txtName.setText(name);
+        this.txtPrice.setText(price);
+    }//GEN-LAST:event_tblProductMouseClicked
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        int row = this.tblProduct.getSelectedRow();
+        
+        if (row == -1) {
+            // JOptionPane
+//            System.out.println("Chọn 1 dòng để xóa");
+            JOptionPane.showMessageDialog(this, "Chọn 1 dòng để xóa");
+            return ;
+        }
+        
+        // Xóa đối tượng trong ArrayList
+        this.serv.delete(row);
+        
+        
+        // Hiển thị lên Table
+        this.loadTable();
+        
+        JOptionPane.showMessageDialog(this, "Xóa thành công");
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        Product p = this.getForm();
+        if (p == null) {
+            return ;
+        }
+
+        // Thêm vào ArrayList
+        this.serv.insert(p);
+        
+        // Load lại JTable
+        this.loadTable();
+        this.clear();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        Product p = this.getForm();
+        if (p == null) {
+            return ;
+        }
+        
+        int row = this.tblProduct.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn 1 dòng để sửa");
+            return ;
+        }
+        
+        this.serv.update(row, p);
+        JOptionPane.showMessageDialog(this, "Sửa thành công");
+        this.loadTable();
+        this.clear();
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private Product getForm()
+    {
+        // Đọc giá trị từ form
+        String name = this.txtName.getText();
+        String priceStr = this.txtPrice.getText();
+        
+        // Kiểm tra form
+        if (name.trim().equals("") || priceStr.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Không được để trống");
+            return null;
+        }
+        
+        double price = Double.parseDouble(priceStr);
+        // Khởi tạo đối tượng Product
+        Product p = new Product(name, price);
+        return p;
+    }
+    
+    private void clear()
+    {
+        this.txtName.setText("");
+        this.txtPrice.setText("");
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
