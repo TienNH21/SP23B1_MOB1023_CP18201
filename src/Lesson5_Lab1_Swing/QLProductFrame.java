@@ -274,10 +274,16 @@ public class QLProductFrame extends javax.swing.JFrame {
             return null;
         }
         
-        double price = Double.parseDouble(priceStr);
-        // Khởi tạo đối tượng Product
-        Product p = new Product(name, price);
-        return p;
+        try {
+            double price = Double.parseDouble(priceStr);
+            // Khởi tạo đối tượng Product
+            Product p = new Product(name, price);
+            return p;
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Giá phải là số");
+            return null;
+        }
     }
     
     private void clear()
