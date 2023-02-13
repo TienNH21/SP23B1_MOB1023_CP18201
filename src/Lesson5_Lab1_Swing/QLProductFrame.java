@@ -12,10 +12,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class QLProductFrame extends javax.swing.JFrame {
+public class QLProductFrame extends javax.swing.JFrame 
+    implements Runnable {
     private String filename = "product.txt";
     private IProductService serv;
     public QLProductFrame() {
@@ -31,6 +35,25 @@ public class QLProductFrame extends javax.swing.JFrame {
         
         // Hiển thị lên JTable
         this.loadTable();
+
+        Thread t = new Thread(this);
+        t.start();
+    }
+    
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                // Chờ 1s trước khi thực hiện tiếp
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            String t = this.getTime();
+            System.out.println(t);
+            this.lblDongHo.setText(t);
+        }
     }
     
     private void loadTable()
@@ -44,6 +67,15 @@ public class QLProductFrame extends javax.swing.JFrame {
             Object[] rowData = { p.getName(), p.getPrice() };
             dtm.addRow(rowData);
         }
+    }
+    
+    public String getTime()
+    {
+        Calendar c = Calendar.getInstance();
+        int h = c.get(Calendar.HOUR_OF_DAY);
+        int m = c.get(Calendar.MINUTE);
+        int s = c.get(Calendar.SECOND);
+        return h + ":" + m + ":" + s;
     }
 
     @SuppressWarnings("unchecked")
@@ -61,6 +93,7 @@ public class QLProductFrame extends javax.swing.JFrame {
         btnClear = new javax.swing.JButton();
         btnDoc = new javax.swing.JButton();
         btnGhi = new javax.swing.JButton();
+        lblDongHo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProduct = new javax.swing.JTable();
@@ -113,6 +146,8 @@ public class QLProductFrame extends javax.swing.JFrame {
             }
         });
 
+        lblDongHo.setText("00:00");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -145,7 +180,8 @@ public class QLProductFrame extends javax.swing.JFrame {
                         .addComponent(btnDoc)
                         .addGap(18, 18, 18)
                         .addComponent(btnGhi)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblDongHo)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -166,7 +202,8 @@ public class QLProductFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDoc)
-                    .addComponent(btnGhi))
+                    .addComponent(btnGhi)
+                    .addComponent(lblDongHo))
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
@@ -333,6 +370,8 @@ public class QLProductFrame extends javax.swing.JFrame {
             return ;
         }
         
+        String errMsg = "";
+        Exception e = null;
         try {
             // Mở luồng để đọc file
             FileInputStream fis = new FileInputStream(f);
@@ -342,17 +381,21 @@ public class QLProductFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Đọc file thành công");
             this.serv.setList(ds);
             this.loadTable();
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "File không tồn tại");
-            e.printStackTrace();
-            return ;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Lỗi luồng đọc");
-            e.printStackTrace();
-            return ;
-        } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "Lỗi luồng đọc");
-            e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            errMsg = "File không tồn tại";
+            e = ex;
+        } catch (IOException ex) {
+            errMsg = "Lỗi luồng đọc";
+            e = ex;
+        } catch (ClassNotFoundException ex) {
+            errMsg = "Lỗi luồng đọc";
+            e = ex;
+        } finally {
+            if (e != null) {
+                JOptionPane.showMessageDialog(this, errMsg);
+                e.printStackTrace();
+            }
+
             return ;
         }
     }//GEN-LAST:event_btnDocActionPerformed
@@ -431,6 +474,7 @@ public class QLProductFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDongHo;
     private javax.swing.JTable tblProduct;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrice;
