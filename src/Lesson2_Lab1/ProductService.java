@@ -25,5 +25,10 @@ public class ProductService implements IProductService {
     public ArrayList<Product> select() {
         return this.list;
     }
+
+    @Override
+    public void setList(ArrayList<Product> ds) {
+        this.list = ds;
+    }
     
 }
